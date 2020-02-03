@@ -84,6 +84,7 @@ namespace Online_Shop.Areas.Admin.Controllers
         
         
         //GET: Admin/Pages/EditPage/ID
+        [HttpGet]
         public ActionResult EditPage(int id)
         {
             //Declare PageVM
@@ -106,7 +107,80 @@ namespace Online_Shop.Areas.Admin.Controllers
 
             return View(model);
         }
+        //POST: Admin/Pages/EditPage/ID
+        [HttpPost]
+        public ActionResult EditPage(pageVM model)
+        {
+            //Get model state
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            using (Db db = new Db())
+            {
+                //Get Id
+                int Id = model.Id;
+                //Declare Slug
+                string slug ="home";
 
+                //Get the page
+                pageDTO dto = db.Pages.Find(Id);
+                //DTO title
+                dto.Title = model.Title;
+                //Check slug and set it if needed
+                if (model.Slug != "home")
+                {
+                    if (string.IsNullOrWhiteSpace(model.Slug))
+                    {
+                        slug = model.Title.Replace(" ", "-").ToLower();
+                    }
+                    else
+                    {
+                        slug = model.Slug.Replace(" ", "-").ToLower();
+
+                    }
+                }
+                //Check if slug and title unique
+                if(db.Pages.Where(x=> x.Id != Id).Any(x=> x.Title == model.Title)|| db.Pages.Where(x => x.Id != Id).Any(x => x.Slug == slug))
+                {
+                    ModelState.AddModelError("", "The title or slug already exists");
+                    return View(model);
+                }
+                //dto the rest
+                dto.Slug = slug;
+                dto.Body = model.Body;
+                dto.HasSidebar = model.HasSidebar;
+                //save dto
+                db.SaveChanges();
+            }
+            //save tempdata message
+            TempData["SM"] = "The page has been edited!!!";
+            //Redirect
+            return RedirectToAction("EditPage");
+        }
+        //POST: Admin/Pages/PageDetails
+        public ActionResult PageDetails(int id)
+        {
+            //Declare PageVM
+            pageVM model;
+
+            using (Db db = new Db())
+            {
+                //Get the Page
+                pageDTO dto = db.Pages.Find(id);
+
+                //Confirm Page Exists
+                if(dto == null)
+                {
+                    return Content("The Page doesn't exist");
+                }
+                model =new pageVM(dto);
+
+                //Init PageVM
+            }
+            //Return View with model 
+            return View(model);
+        }
 
     }
 }
