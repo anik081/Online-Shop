@@ -160,6 +160,8 @@ namespace Online_Shop.Areas.Admin.Controllers
         }
         //POST: Admin/Pages/PageDetails
         public ActionResult PageDetails(int id)
+
+
         {
             //Declare PageVM
             pageVM model;
@@ -181,6 +183,24 @@ namespace Online_Shop.Areas.Admin.Controllers
             //Return View with model 
             return View(model);
         }
+        //GET: Admin/Pages/DeletePage
+        public ActionResult DeletePage(int id)
+        {
+            using (Db db = new Db())
+            {
 
+                //get page
+                pageDTO dto = db.Pages.Find(id);
+
+                //remove page
+                db.Pages.Remove(dto);
+
+                // save
+                db.SaveChanges();
+            }
+            //redirect
+
+            return RedirectToAction("Index");
+        }
     }
 }
