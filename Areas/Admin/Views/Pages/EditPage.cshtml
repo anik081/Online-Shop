@@ -10,7 +10,7 @@
     <div class="alert alert-success">
         @TempData["SM"]
     </div>
-} 
+}
 
 @using (Html.BeginForm())
 {
@@ -33,11 +33,13 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Slug, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @if(Model.Slug == "Home"){
-                @Html.EditorFor(model => model.Slug, new { htmlAttributes = new { @class = "form-control",@readonly ="readonly" } })
+                @if (Model.Slug == "Home")
+                {
+                    @Html.EditorFor(model => model.Slug, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                 }
-                else{
-                @Html.EditorFor(model => model.Slug, new { htmlAttributes = new { @class = "form-control" } })
+                else
+                {
+                    @Html.EditorFor(model => model.Slug, new { htmlAttributes = new { @class = "form-control" } })
                 }
                 @Html.ValidationMessageFor(model => model.Slug, "", new { @class = "text-danger" })
             </div>
@@ -75,3 +77,13 @@
 <div>
     @Html.ActionLink("Back to Pages", "Index")
 </div>
+@section Scripts
+{
+
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+    <script>
+
+        CKEDITOR.replace("Body");
+    </script>
+
+}

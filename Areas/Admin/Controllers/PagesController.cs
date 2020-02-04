@@ -185,6 +185,8 @@ namespace Online_Shop.Areas.Admin.Controllers
         }
         //GET: Admin/Pages/DeletePage
         public ActionResult DeletePage(int id)
+
+
         {
             using (Db db = new Db())
             {
@@ -202,5 +204,67 @@ namespace Online_Shop.Areas.Admin.Controllers
 
             return RedirectToAction("Index");
         }
+
+        //POST: Admin/Pages/ReorderPage
+        [HttpPost]
+        public void  ReorderPage(int[] id)
+
+
+        {
+            using (Db db = new Db())
+            {
+                //set initial count
+                int count = 1;
+                //declare pagDTO
+                pageDTO dto;
+                //Set Sorting for each page
+                foreach (var pageid in id)
+                {
+                    dto = db.Pages.Find(pageid);
+                    dto.Sorting = count;
+                    db.SaveChanges();
+                    count++;
+                }
+            }
+        }
+        [HttpGet]
+        //GET: Admin/Pages/EditSidebar
+        public ActionResult EditSidebar()
+        {
+            //declare model
+            sidebarVM model;
+            using (Db db = new Db())
+            {
+                //get the dto
+                sidebarDTO dto = db.Sidebars.Find(1);
+                // init model
+                model = new sidebarVM(dto);
+            }
+            //return view with model
+            return View(model);
+        }
+        [HttpPost]
+        //Post: Admin/Pages/EditSidebar
+        public ActionResult EditSidebar(sidebarVM model)
+        {
+            using (Db db = new Db())
+            {
+
+
+                //get dto
+                sidebarDTO dto = db.Sidebars.Find(1);
+                //dto the body
+                dto.Body = model.Body;
+                //save
+                db.SaveChanges();
+                //temp message
+                TempData["SM"] = "Side bas has been edited";
+            }
+            //redirect
+
+            return RedirectToAction("EditSidebar");
+        }
+
+
     }
 }

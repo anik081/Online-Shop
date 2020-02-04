@@ -9,5 +9,6 @@ namespace Online_Shop.Models.Data
     public class Db : DbContext
     {
         public DbSet<pageDTO> Pages{ get; set; }
+        public DbSet<sidebarDTO> Sidebars { get; set; }
     }
 }
